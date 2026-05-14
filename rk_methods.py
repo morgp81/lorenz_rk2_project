@@ -2,6 +2,10 @@ from euler_method import euler
 from lorenz import lorenz 
 
 def explicit_rk2(x0, y0, z0, sigma, rho, beta, h):
+    #k1 = f(current point)
+    #predictor = current point + h*k1
+    #k2 = f(predictor)
+    #new point = current point + h*(k1+k2)/2
     k1_x, k1_y, k1_z = lorenz(x0, y0, z0, sigma, rho, beta)
     euler_x, euler_y, euler_z = euler(x0, y0, z0, sigma, rho, beta, h)
     k2_x, k2_y, k2_z = lorenz(euler_x, euler_y, euler_z, sigma, rho, beta)
@@ -11,8 +15,16 @@ def explicit_rk2(x0, y0, z0, sigma, rho, beta, h):
 
     return x, y, z
 
+# 1. use current xyz guess
+# 2. build midpoint
+# 3. compute slope at midpoint
+# 4. use slope to compute better xyz
+# 5. repeat
+
 def implicit_rk2(x0, y0, z0, sigma, rho, beta, h):
-    x,y,z = euler(x0, y0, z0, sigma, rho, beta, h)
+    #future point = current point + h*f(midpoint)
+    #midpoint = (current point + future point)/2
+    x,y,z = euler(x0, y0, z0, sigma, rho, beta, h) #guess for future point
     for i in range(10):
         mid_x = (x0 + x) / 2
         mid_y = (y0 + y) / 2
@@ -21,6 +33,7 @@ def implicit_rk2(x0, y0, z0, sigma, rho, beta, h):
         new_x = x0 + lorenz_mid_x * h
         new_y = y0 + lorenz_mid_y * h
         new_z = z0 + lorenz_mid_z * h
+        #if the new point is close enough to the old point, we can stop iterating
         if abs(new_x - x) < 1e-6 and abs(new_y - y) < 1e-6 and abs(new_z - z) < 1e-6:
             x,y,z = new_x, new_y, new_z
             break
@@ -28,6 +41,8 @@ def implicit_rk2(x0, y0, z0, sigma, rho, beta, h):
             x,y,z = new_x, new_y, new_z
 
     return x, y, z
+
+
 
 def explicit_rk4(x0, y0, z0, sigma, rho, beta, h):
     k1_x, k1_y, k1_z = lorenz(x0, y0, z0, sigma, rho, beta)

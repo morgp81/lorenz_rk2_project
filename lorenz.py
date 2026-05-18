@@ -1,5 +1,7 @@
 import numpy as np
+from numba import njit
 
+@njit
 def lorenz(x, y, z, sigma, rho, beta):
     dx_dt = sigma * (y - x)
     dy_dt = x * (rho - z) - y

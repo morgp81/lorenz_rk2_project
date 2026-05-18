@@ -1,6 +1,8 @@
 from euler_method import euler
-from lorenz import lorenz 
+from lorenz import lorenz
+from numba import njit
 
+@njit
 def explicit_rk2(x0, y0, z0, sigma, rho, beta, h):
     #k1 = f(current point)
     #predictor = current point + h*k1
@@ -21,6 +23,7 @@ def explicit_rk2(x0, y0, z0, sigma, rho, beta, h):
 # 4. use slope to compute better xyz
 # 5. repeat
 
+@njit
 def implicit_rk2(x0, y0, z0, sigma, rho, beta, h):
     #future point = current point + h*f(midpoint)
     #midpoint = (current point + future point)/2
@@ -43,7 +46,7 @@ def implicit_rk2(x0, y0, z0, sigma, rho, beta, h):
     return x, y, z
 
 
-
+@njit
 def explicit_rk4(x0, y0, z0, sigma, rho, beta, h):
     k1_x, k1_y, k1_z = lorenz(x0, y0, z0, sigma, rho, beta)
     euler_x1 = x0 + k1_x * h / 2
